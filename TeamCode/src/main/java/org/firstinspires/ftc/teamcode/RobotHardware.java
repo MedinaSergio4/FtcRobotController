@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.transition.Slide;
 
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,24 +13,29 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 public class RobotHardware {
 
+    public static IMU imu;// Additional Gyro device
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    public DcMotor rightFront   = null;
-    public DcMotor rightBack  = null;
-    public DcMotor leftFront = null;
-    public DcMotor leftBack = null;
-    public DcMotor slide = null;
+    public DcMotor rightFront;
+    public DcMotor rightBack;
+    public DcMotor leftFront;
+    public DcMotor leftBack;
+    public DcMotor slide;
     //public DcMotor inTake = null;
 
     public static Servo claw = null;
     public static Servo elbow = null;
+    public  static Servo wrist = null;
     public static Servo thrower = null;
-    public static Servo hanger = null;
+    //public static Servo hanger = null;
 
-    public static TouchSensor touch = null;
+    //public static TouchSensor touch = null;
 
 
 
@@ -62,16 +68,17 @@ public class RobotHardware {
 
         claw = hwmap.get(Servo.class, "claw");
         elbow = hwmap.get(Servo.class, "elbow");
+        wrist = hwmap.get(Servo.class, "wrist");
         thrower = hwmap.get(Servo.class, "thrower");
-        hanger = hwmap.get(Servo.class, "hanger");
+        //hanger = hwmap.get(Servo.class, "hanger");
 
 
-        touch = hwmap.get(TouchSensor.class, "touch");
+        //touch = hwmap.get(TouchSensor.class, "touch");
 
 
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         slide.setDirection(DcMotor.Direction.FORWARD);
 
@@ -88,6 +95,9 @@ public class RobotHardware {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        thrower.setPosition(.6);
+
+
         //inTake.setDirection(DcMotor.Direction.REVERSE);
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
         // leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -99,6 +109,23 @@ public class RobotHardware {
         leftHand.setPosition(MID_SERVO);
         rightHand.setPosition(MID_SERVO);
 */
+
+
+    }
+    public static void autoinit (HardwareMap ahwMap){
+        // Save reference to Hardware map
+        hwMap = ahwMap;
+
+        //imu stuff
+        imu = hwMap.get(IMU.class, "imu");
+        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
+
+
+        thrower.setPosition(.6);
+
+
+        //////close claw
+        //
     }
 }
 

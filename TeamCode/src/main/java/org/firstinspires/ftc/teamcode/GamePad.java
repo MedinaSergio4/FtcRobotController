@@ -5,6 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.RobotHardware;
 
 
@@ -28,15 +32,32 @@ public class GamePad extends OpMode {
 
     int slideDown;
 
+    boolean squarePressed;
+    boolean trianglePressed;
+    boolean circlePressed;
+    boolean crossPressed;
+
+    int clawCount;
+    int elbowCount;
+    int throwerCount;
+    int hangerCount;
+
     @Override
     public void init() {
         robot.init(hardwareMap);
         slideDown = robot.slide.getCurrentPosition();
+        robot.wrist.setPosition(.375);
+        robot.elbow.setPosition(.6775);
 
-    }
+
+        }
+
+
+
 
     @Override
     public void loop() {
+
 //////////////////////////drive system
         //telemetry.addData("SLIDE", "Current Position: %7d", robot.slide.getCurrentPosition());
         //telemetry.update();
@@ -65,6 +86,7 @@ public class GamePad extends OpMode {
         robot.rightBack.setPower(RightBackPower * pmodify);
 
 
+        telemetry.addData("throwerValue", robot.thrower.getPosition());
 
 
 /////////////////////////////////////slide
@@ -81,6 +103,8 @@ public class GamePad extends OpMode {
         if (gamepad1.triangle ){
             robot.claw.setPosition(.05);
         }
+
+
 
 
 ///// Set levels
@@ -115,7 +139,95 @@ public class GamePad extends OpMode {
 
 
 
+        if (gamepad1.square){
+            robot.claw.setPosition(.3);
+        }
+        if (gamepad1.cross){
+            robot.claw.setPosition(.65);
+        }
 
+        if (gamepad1.dpad_down){
+            robot.wrist.setPosition(.375);
+            robot.elbow.setPosition(.6775);
+
+        }
+        if (gamepad1.dpad_up){
+            robot.wrist.setPosition(.3);
+            robot.elbow.setPosition(.5);
+
+        }
+
+        if(gamepad1.triangle){
+            robot.thrower.setPosition(.45);
+        }
+
+
+
+        /*
+        if (gamepad1.square) {
+            if (!squarePressed) {
+                clawCount += 1;
+                squarePressed = true;
+            } else {
+                squarePressed = false;
+            }
+
+            if (clawCount % 2 == 0) {
+                robot.claw.setPosition(.86);
+            } else {
+                robot.claw.setPosition(0);
+            }
+        }*/
+
+
+
+       /* if (gamepad1.triangle) {
+            if (!trianglePressed) {
+                elbowCount += 1;
+                trianglePressed = true;
+            } else {
+                trianglePressed = false;
+            }
+
+            if (elbowCount % 2 == 0) {
+                robot.elbow.setPosition(.35);
+            } else {
+                robot.elbow.setPosition(.1);
+            }
+        }*/
+
+
+
+        /*if (gamepad1.circle) {
+            if (!circlePressed) {
+                hangerCount += 1;
+                circlePressed = true;
+            } else {
+                circlePressed = false;
+            }
+
+            if (hangerCount % 2 == 0) {
+                robot.hanger.setPosition(.86);
+            } else {
+                robot.hanger.setPosition(0);
+            }
+        }
+
+        if (gamepad1.cross) {
+            if (!crossPressed) {
+                throwerCount += 1;
+                crossPressed = true;
+            } else {
+                crossPressed = false;
+            }
+
+            if (throwerCount % 2 == 0) {
+                robot.thrower.setPosition(.86);
+            } else {
+                robot.thrower.setPosition(0);
+            }
+        }
+        */
         //////////////////////////////////////Levels
 
     }
