@@ -21,10 +21,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Core;
@@ -38,14 +37,14 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
-import org.firstinspires.ftc.teamcode.elementPipeline;
+
 /*
  * This sample demonstrates a basic (but battle-tested and essentially
  * 100% accurate) method of detecting the skystone when lined up with
  * the sample regions over the first 3 stones.
  */
-@TeleOp
-public class visionBlue extends LinearOpMode
+@Autonomous
+public class BlueBack extends RobotAutoDriveByGyro_Linear
 {
     OpenCvWebcam webcam;
     elementPipeline pipeline;
@@ -87,22 +86,13 @@ public class visionBlue extends LinearOpMode
             }
         });
 
+
         waitForStart();
 
-        while (opModeIsActive())
-        {
-            telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.update();
 
-            // Don't burn CPU cycles busy-looping in this sample
-            sleep(50);
-        }
-    }
-
-
-        /*
-         * Call this from the OpMode thread to obtain the latest analysis
-         */
+        driveStraight(.5,.6,0);
 
     }
 
+
+}
