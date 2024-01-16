@@ -29,9 +29,9 @@ public class RobotHardware {
     public DcMotor slide;
     //public DcMotor inTake = null;
 
-    public static Servo claw = null;
+    public static Servo claw1 = null;
     public static Servo elbow = null;
-    public  static Servo wrist = null;
+    public  static Servo claw2 = null;
     public static Servo thrower = null;
     //public static Servo hanger = null;
 
@@ -66,9 +66,9 @@ public class RobotHardware {
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
 
-        claw = hwmap.get(Servo.class, "claw");
+        claw1 = hwmap.get(Servo.class, "claw1");
         elbow = hwmap.get(Servo.class, "elbow");
-        wrist = hwmap.get(Servo.class, "wrist");
+        claw2 = hwmap.get(Servo.class, "claw2");
         thrower = hwmap.get(Servo.class, "thrower");
         //hanger = hwmap.get(Servo.class, "hanger");
 
@@ -76,8 +76,8 @@ public class RobotHardware {
         //touch = hwmap.get(TouchSensor.class, "touch");
 
 
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         slide.setDirection(DcMotor.Direction.FORWARD);
@@ -95,7 +95,7 @@ public class RobotHardware {
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        thrower.setPosition(.6);
+        //thrower.setPosition(.6);
 
 
         //inTake.setDirection(DcMotor.Direction.REVERSE);
@@ -121,7 +121,7 @@ public class RobotHardware {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
 
-        thrower.setPosition(.6);
+     //   thrower.setPosition(.6);
 
 
         //////close claw

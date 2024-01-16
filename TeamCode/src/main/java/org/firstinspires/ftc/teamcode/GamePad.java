@@ -46,8 +46,8 @@ public class GamePad extends OpMode {
     public void init() {
         robot.init(hardwareMap);
         slideDown = robot.slide.getCurrentPosition();
-        robot.wrist.setPosition(.375);
-        robot.elbow.setPosition(.6775);
+        //robot.wrist.setPosition(.375);
+        //robot.elbow.setPosition(.6775);
 
 
         }
@@ -128,10 +128,10 @@ public class GamePad extends OpMode {
 */
 /////////////manual level set
         if(gamepad1.left_bumper) {
-            robot.slide.setPower(-.6);///up
+            robot.slide.setPower(.6);///up
         }
         else if(gamepad1.left_trigger >  .5 ){///down
-            robot.slide.setPower(.6);//down
+            robot.slide.setPower(-.6);//down
         }
         else{
             robot.slide.setPower(0);//stay still
@@ -140,28 +140,38 @@ public class GamePad extends OpMode {
 
 
         if (gamepad1.square){
-            robot.claw.setPosition(.3);
+            robot.claw1.setPosition(.45);
+            robot.claw2.setPosition(.65);
         }
         if (gamepad1.cross){
-            robot.claw.setPosition(.65);
+            robot.claw1.setPosition(0.6);
+            robot.claw2.setPosition(.85);
         }
 
         if (gamepad1.dpad_down){
-            robot.wrist.setPosition(.375);
-            robot.elbow.setPosition(.6775);
+            //robot.wrist.setPosition(.375);
+            robot.elbow.setPosition(.6);
 
         }
         if (gamepad1.dpad_up){
-            robot.wrist.setPosition(.3);
-            robot.elbow.setPosition(.5);
+            //robot.wrist.setPosition(.3);
+            robot.elbow.setPosition(.8);
 
         }
 
         if(gamepad1.triangle){
-            robot.thrower.setPosition(.45);
+            robot.thrower.setPosition(.075);
+        }
+        if(gamepad1.circle){
+            robot.thrower.setPosition(-.125);
         }
 
 
+        telemetry.addData("claw1Pos","%.4f",robot.claw1.getPosition());
+        telemetry.addData("claw2Pos","%.4f",robot.claw2.getPosition());
+        telemetry.addData("throwerPos","%.4f",robot.thrower.getPosition());
+        telemetry.addData("elbowPos","%.4f",robot.elbow.getPosition());
+        telemetry.update();
 
         /*
         if (gamepad1.square) {

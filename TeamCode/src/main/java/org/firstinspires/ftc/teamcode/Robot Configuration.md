@@ -1,11 +1,16 @@
------MOTORS----
-    ----Expansion Hub-----
-    0----leftFront
-    1----leftBack
-    2----slide
+Control Hub
+    Servo
+0-thrower
+5-claw2
+    Motors
+0-leftFront
+1-leftBack
 
-
-
-    ----Control Hub-----
-    0----rightFront
-    1----rightBack
+Expansion HUb
+    Servo
+0-claw1
+1-elbow
+    Motors
+0-rightBack
+1-rightFront
+2-slide

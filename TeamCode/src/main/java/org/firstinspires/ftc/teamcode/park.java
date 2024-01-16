@@ -37,7 +37,6 @@ public class park extends automethods {
         robot.leftBack.setPower(.3);
         robot.rightBack.setPower(.3);
         robot.rightFront.setPower(.3);
-        robot.wrist.setPosition(.3);
         robot.elbow.setPosition(.5);
 
 
