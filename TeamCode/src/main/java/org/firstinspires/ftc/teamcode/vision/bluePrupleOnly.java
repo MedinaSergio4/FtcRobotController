@@ -21,31 +21,16 @@
 
 package org.firstinspires.ftc.teamcode.vision;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.RobotHardware;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvWebcam;
-import org.firstinspires.ftc.teamcode.vision.elementPipeline;
-
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.vision.WebcamExample;
-import org.firstinspires.ftc.teamcode.vision.bluePipeline;
+import org.firstinspires.ftc.teamcode.RobotHardware;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -56,12 +41,15 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * 100% accurate) method of detecting the skystone when lined up with
  * the sample regions over the first 3 stones.
  */
-@Autonomous(name="blueAuto", group="Robot")
+@Autonomous(name="bluePurpleOnly", group="Robot")
 
-public class visionBlue extends LinearOpMode
+public class bluePrupleOnly extends LinearOpMode
 {  RobotHardware robot = new RobotHardware();
     OpenCvWebcam webcam;
-    bluePipeline red = new bluePipeline();
+    bluePipeline blue = new bluePipeline();
+
+
+    bluePipeline.elementPosition snapshotAnalysis = bluePipeline.elementPosition.CENTER;
 
 
 
@@ -99,15 +87,24 @@ public class visionBlue extends LinearOpMode
     // Requiring more accuracy (a smaller number) will often make the turn take longer to get into the final position.
     // Define the Proportional control coefficient (or GAIN) for "heading control".
     // We define one value when Turning (larger errors), and the other is used when Driving straight (smaller errors).
-    // Increase these numbers if the heading does not corrects strongly enough (eg: a heavy robot or using tracks)
+    // Increase these numbers if the heading d5oes not corrects strongly enough (eg: a heavy robot or using tracks)
     // Decrease these numbers if the heading does not settle on the correct value (eg: very agile robot with omni wheels)
     static final double     P_TURN_GAIN            = 0.02;     // Larger is more responsive, but also less stable
     static final double     P_DRIVE_GAIN           = 0.03;     // Larger is more responsive, but also less stable
 
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         robot.init(hardwareMap);
+        robot.rightFront.setDirection(DcMotor.Direction.REVERSE);
+        robot.rightBack.setDirection(DcMotor.Direction.FORWARD);
+        robot.leftFront.setDirection(DcMotor.Direction.FORWARD);
+        robot.leftBack.setDirection(DcMotor.Direction.REVERSE);
+        robot.claw2.setPosition(.65);
+        robot.claw1.setPosition(.6);
+        robot.elbow.setPosition(.75);
+
+
 
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
@@ -130,7 +127,7 @@ public class visionBlue extends LinearOpMode
          * of a frame from the camera. Note that switching pipelines on-the-fly
          * (while a streaming session is in flight) *IS* supported.
          */
-        webcam.setPipeline(red);
+        webcam.setPipeline(blue);
 
         /*
          * Open the connection to the camera device. New in v1.4.0 is the ability
@@ -180,23 +177,26 @@ public class visionBlue extends LinearOpMode
         /*
          * Send some stats to the telemetry
          */
-        telemetry.addData("Frame Count", webcam.getFrameCount());
-        telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
-        telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
-        telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
-        telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
-        telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
+
+        while (!isStarted() && !isStopRequested()) {
+            telemetry.addData("Frame Count", webcam.getFrameCount());
+            telemetry.addData("FPS", String.format("%.2f", webcam.getFps()));
+            telemetry.addData("Total frame time ms", webcam.getTotalFrameTimeMs());
+            telemetry.addData("Pipeline time ms", webcam.getPipelineTimeMs());
+            telemetry.addData("Overhead time ms", webcam.getOverheadTimeMs());
+            telemetry.addData("Theoretical max FPS", webcam.getCurrentPipelineMaxFps());
 
 
-
-        telemetry.addLine("Waiting for start");
-
-
-        telemetry.addData(">", "Robot Heading = %4.0f", getHeading());
+            telemetry.addLine("Waiting for start");
 
 
-        telemetry.update();
+            telemetry.addData(">", "Robot Heading = %4.0f", getHeading());
 
+            snapshotAnalysis = blue.getAnalysis();
+            telemetry.addData("snapshot postSTART analysis", snapshotAnalysis);
+
+            telemetry.update();
+        }
         /*
          * Wait for the user to press start on the Driver Station
          */
@@ -204,11 +204,52 @@ public class visionBlue extends LinearOpMode
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
         webcam.stopStreaming();
         robot.imu.resetYaw();
 
-        driveStraight(.7,12, 0);
+        switch (snapshotAnalysis)
+        {
+            case LEFT:
+            { driveStraight(.5,35,0);
+                turnToHeading(.3,40);
+                robot.elbow.setPosition(.475);
+                holdHeading(0,0,.5);
+                robot.claw1.setPosition(0.4);
+                robot.elbow.setPosition(.75);
+                holdHeading(0,0,1);
+                driveStraight(.5,-37,0);
+
+                break;
+            }
+            case CENTER: {
+                driveStraight(.5,38.5,0);//38.5
+                turnToHeading(.2,-10);
+                robot.elbow.setPosition(.475);
+                holdHeading(0,0,.5);
+                robot.claw1.setPosition(0.4);
+                robot.elbow.setPosition(.75);
+                holdHeading(0,0,1);
+                driveStraight(.5,-36,0);
+
+
+                break;
+            }
+            case RIGHT:{
+                driveStraight(.5,34,0);
+                turnToHeading(.3,-25);
+                robot.elbow.setPosition(.475);
+                holdHeading(0,0,.5);
+                robot.claw1.setPosition(0.4);
+                robot.elbow.setPosition(.75);
+                holdHeading(0,0,1);
+                driveStraight(.5,-38,0);
+
+
+                break;
+            }
+        }
+
+
 
 
 
@@ -461,5 +502,5 @@ public class visionBlue extends LinearOpMode
         return orientation.getYaw(AngleUnit.DEGREES);
     }
 
-    }
+}
 

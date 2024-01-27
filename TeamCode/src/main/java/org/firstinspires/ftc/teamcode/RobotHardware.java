@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode;
 import android.transition.Slide;
 
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,12 +22,15 @@ public class RobotHardware {
 
     public static IMU imu;// Additional Gyro device
 
+
+
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
     public DcMotor rightFront;
     public DcMotor rightBack;
     public DcMotor leftFront;
     public DcMotor leftBack;
     public DcMotor slide;
+    public DcMotor hanger;
     //public DcMotor inTake = null;
 
     public static Servo claw1 = null;
@@ -34,6 +38,7 @@ public class RobotHardware {
     public  static Servo claw2 = null;
     public static Servo thrower = null;
     //public static Servo hanger = null;
+    public static Servo hangClaw = null;
 
     //public static TouchSensor touch = null;
 
@@ -54,6 +59,7 @@ public class RobotHardware {
      */
     public void init(HardwareMap hwmap)    {
 
+        imu = hwmap.get(IMU.class, "imu");
 
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
         rightFront  = hwmap.get(DcMotor.class, "rightFront");
@@ -62,6 +68,7 @@ public class RobotHardware {
         leftBack = hwmap.get(DcMotor.class, "leftBack");
         //inTake = hwmap.get(DcMotor.class, "inTake");
         slide = hwmap.get(DcMotor.class, "slide");
+        hanger = hwmap.get(DcMotor.class, "hanger");
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
@@ -70,10 +77,22 @@ public class RobotHardware {
         elbow = hwmap.get(Servo.class, "elbow");
         claw2 = hwmap.get(Servo.class, "claw2");
         thrower = hwmap.get(Servo.class, "thrower");
+        hangClaw = hwmap.get(Servo.class, "hangClaw");
         //hanger = hwmap.get(Servo.class, "hanger");
 
 
         //touch = hwmap.get(TouchSensor.class, "touch");
+
+
+
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.LEFT;
+        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
+
+        RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
+
+        // Now initialize the IMU with this mounting orientation
+        // Note: if you choose two conflicting directions, this initialization will cause a code exception.
+        imu.initialize(new IMU.Parameters(orientationOnRobot));
 
 
         rightFront.setDirection(DcMotor.Direction.FORWARD);
@@ -81,12 +100,14 @@ public class RobotHardware {
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.FORWARD);
         slide.setDirection(DcMotor.Direction.FORWARD);
+        hanger.setDirection(DcMotorSimple.Direction.FORWARD);
 
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        hanger.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -94,38 +115,20 @@ public class RobotHardware {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        hanger.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //thrower.setPosition(.6);
 
+        thrower.setPosition(.125);
+        claw1.setPosition(.6);
+        claw2.setPosition(.65);
 
-        //inTake.setDirection(DcMotor.Direction.REVERSE);
-        // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
-        // leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Define and initialize ALL installed servos.
-/*        leftHand = myOpMode.hardwareMap.get(Servo.class, "left_hand");
-        rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
-        leftHand.setPosition(MID_SERVO);
-        rightHand.setPosition(MID_SERVO);
-*/
 
 
     }
     public static void autoinit (HardwareMap ahwMap){
-        // Save reference to Hardware map
-        hwMap = ahwMap;
-
-        //imu stuff
-        imu = hwMap.get(IMU.class, "imu");
-        YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
 
 
-     //   thrower.setPosition(.6);
 
-
-        //////close claw
-        //
     }
 }
 

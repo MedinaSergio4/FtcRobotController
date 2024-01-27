@@ -57,6 +57,7 @@ public class GamePad extends OpMode {
 
     @Override
     public void loop() {
+        getRuntime();
 
 //////////////////////////drive system
         //telemetry.addData("SLIDE", "Current Position: %7d", robot.slide.getCurrentPosition());
@@ -127,7 +128,7 @@ public class GamePad extends OpMode {
         }
 */
 /////////////manual level set
-        if(gamepad1.left_bumper) {
+        if(gamepad1.left_bumper && robot.slide.getCurrentPosition()<=2220) {
             robot.slide.setPower(.6);///up
         }
         else if(gamepad1.left_trigger >  .5 ){///down
@@ -140,37 +141,64 @@ public class GamePad extends OpMode {
 
 
         if (gamepad1.square){
-            robot.claw1.setPosition(.45);
+            robot.claw1.setPosition(.6);
             robot.claw2.setPosition(.65);
-        }
+        }///close
         if (gamepad1.cross){
-            robot.claw1.setPosition(0.6);
-            robot.claw2.setPosition(.85);
-        }
+            robot.claw1.setPosition(0.4);
+            robot.claw2.setPosition(.75);
+        }/////open
 
         if (gamepad1.dpad_down){
             //robot.wrist.setPosition(.375);
-            robot.elbow.setPosition(.6);
+            robot.elbow.setPosition(.435);
 
-        }
+        }///down
         if (gamepad1.dpad_up){
             //robot.wrist.setPosition(.3);
-            robot.elbow.setPosition(.8);
+            robot.elbow.setPosition(.75);
 
-        }
+        }///up
 
-        if(gamepad1.triangle){
-            robot.thrower.setPosition(.075);
-        }
+ /*       if(gamepad1.triangle){
+            robot.thrower.setPosition(.125);
+        }///up*/
         if(gamepad1.circle){
             robot.thrower.setPosition(-.125);
-        }
+        }/////down, thrown
+        if(gamepad1.dpad_left){
+        robot.hanger.setPower(.6);
+        }/////up
+        else if(gamepad1.dpad_right) {
+            robot.hanger.setPower(-.6);
+        }////down
+        else{robot.hanger.setPower(0);}
 
+        if(gamepad1.right_bumper){
+            robot.hangClaw.setPosition(0.05);
+        }//////uppp
+       /* if(gamepad1.share){
+            robot.hangClaw.setPosition(.05);
+        }////up but down a little*/
+        if(gamepad1.touchpad){
+            robot.hangClaw.setPosition(.33);
+        }//////down
+
+        //0 has hanger right up against the top, and .05 is just a little after that
+
+        if (gamepad1.triangle && getRuntime()>500){
+            robot.thrower.setPosition(.125);
+        }
 
         telemetry.addData("claw1Pos","%.4f",robot.claw1.getPosition());
         telemetry.addData("claw2Pos","%.4f",robot.claw2.getPosition());
         telemetry.addData("throwerPos","%.4f",robot.thrower.getPosition());
         telemetry.addData("elbowPos","%.4f",robot.elbow.getPosition());
+
+        telemetry.addData("Runtime", getRuntime());
+
+        telemetry.addData("slidePos",robot.slide.getCurrentPosition());
+
         telemetry.update();
 
         /*

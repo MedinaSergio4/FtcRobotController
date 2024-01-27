@@ -9,7 +9,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 
-public class bluePipeline extends OpenCvPipeline {
+public class redPipeline extends OpenCvPipeline {
 
 
 
@@ -33,9 +33,9 @@ public class bluePipeline extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(40,70);
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(130,45);
-    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(240,80);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(10,110);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(120,70);
+    static final Point REGION3_TOPLEFT_ANCHOR_POINT = new Point(230,80);
     static final int REGION_WIDTH = 30;
     static final int REGION_HEIGHT = 30;
 
@@ -211,8 +211,8 @@ public class bluePipeline extends OpenCvPipeline {
         /*
          * Find the max of the 3 averages
          */
-        int maxOneTwo = Math.max(avg1, avg2);
-        int max = Math.max(maxOneTwo, avg3);
+        int maxOneTwo = Math.min(avg1, avg2);
+        int max = Math.min(maxOneTwo, avg3);
 
         /*
          * Now that we found the max, we actually need to go and
